@@ -1,0 +1,203 @@
+{% block content %}
+{%import "_macros.html" as macro%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title><link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <style>
+        body{
+            padding-top: 60px;}
+            .tr-head{background: #dff0d8;}  
+    </style>
+    <link href="../static/boostrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+<body>
+    
+
+<style>
+    .diseno-contenedor {
+        background-color: #7895B2;
+        padding: 20px;
+        width: 1000px;
+        margin: auto;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+    }
+    .diseno-encabezado {
+        display: flex;
+        justify-content: space-between;
+        background-color: #B0C4DE;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .diseno-input {
+        width: 150px;
+        padding: 5px;
+        margin: 5px;
+    }
+    .diseno-opciones {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+        background-color: #B0C4DE;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .diseno-tamano, .diseno-ingredientes, .diseno-cantidad {
+        background-color: #B0C4DE;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .diseno-tabla {
+        margin-top: 20px;
+        background-color: #B0C4DE;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    .diseno-boton {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #4F709C;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .diseno-ventas {
+        background-color: #B0C4DE;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+
+<div class="diseno-contenedor">
+    <form action="" method="post" novalidate>
+        <h3>Datos del cliente</h3>
+        <div class="diseno-encabezado">
+            {{ form.csrf_token }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ macro.campoPizza(form.nombre) }} 
+            {{ macro.campoPizza(form.direccion) }}
+            {{ macro.campoPizza(form.telefono) }}
+        </div>
+        <h3>Fecha del pedido</h3>
+        <div class="diseno-encabezado">
+            {{ macro.campoPizza(form.dia) }} 
+            {{ macro.campoPizza(form.mes) }}
+            {{ macro.campoPizza(form.anio) }}
+        </div>
+        
+        <div class="diseno-opciones">
+            <div class="diseno-tamano">
+                <label>Tamaño Pizza</label><br>
+                {{macro.campoPizza(form.tamanio)}}
+            </div>
+            
+            <div class="diseno-ingredientes">
+                <label>Ingredientes</label><br>
+                {{macro.campoPizza(form.ingredientes)}}
+            </div>
+            
+            <div class="diseno-cantidad">
+                <label>Num. de Pizzas.</label>
+                {{ macro.campoPizza(form.numPizzas) }}
+                <input type="submit" name="btnAgregar" value="Verificar" class="diseno-boton">
+            </div>
+        </div>
+    
+    
+    <div class="diseno-tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tamaño</th>
+                    <th>Ingredientes</th>
+                    <th>Num. Pizzas</th>
+                    <th>SubTotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.tamanio }}</td>
+                    <td>{{ pedido.ingredientes }}</td>
+                    <td>{{ pedido.num_pizzas }}</td>
+                    <td>{{ pedido.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <form method="post">
+            <input type="submit" name="btnQuitar" value="Quitar" class="diseno-boton">
+            <input type="submit" name="btnTerminar" value="Terminar" class="diseno-boton">
+        </form>
+    </div>
+    
+    <div class="diseno-ventas">
+        <h3>Buscar Ventas por Día y Mes</h3>
+        <form method="post" >
+            {{ form.csrf_token }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="dia_busqueda">Día:</label>
+            <input type="number" name="dia_busqueda" min="1" max="31" required>
+    
+            <label for="mes_busqueda">Mes:</label>
+            <input type="number" name="mes_busqueda" min="1" max="12" required>
+            
+            <label for="mes_busqueda"></label>
+            <input type="submit" name="btnBuscarFecha" value="Buscar" class="diseno-boton">
+        </form>
+    
+        {% if pedidos_filtrados %}
+            <h4>Resultados:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tamaño</th>
+                        <th>Ingredientes</th>
+                        <th>Num. Pizzas</th>
+                        <th>SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos_filtrados %}
+                    <tr>
+                        <td>{{ pedido.tamanio }}</td>
+                        <td>{{ pedido.ingredientes }}</td>
+                        <td>{{ pedido.num_pizzas }}</td>
+                        <td>{{ pedido.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay ventas registradas en esta fecha.</p>
+        {% endif %}
+    </div>
+    <br>
+    <form action="{{ url_for('logout') }}" method="GET">
+        {{ form.csrf_token }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="diseno-boton">Cerrar sesión</button>
+    </form>
+    
+    
+    
+</div>
+</body>
+</html>
+{% endblock %}

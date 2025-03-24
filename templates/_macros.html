@@ -1,0 +1,30 @@
+{% extends "layouts.html"%}
+
+
+{% macro campoPizza(campo) %}
+    <div class="campo-container">
+        {{ campo.label }}
+        {{ campo(class="campo-input") }}
+        {% if campo.errors %}
+            <div class="campo-error">
+                {% for error in campo.errors %}
+                    <span class="error-text" style="color: red;">⚠ {{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro campoPizza(campo) %}
+    <div class="campo-container">
+        {{ campo.label }}
+        {{ campo(class="campo-input") }}
+        {% if campo.errors %}
+            <div class="campo-error">
+                {% for error in campo.errors %}
+                    <span class="error-text" style="color: red;">⚠ {{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}

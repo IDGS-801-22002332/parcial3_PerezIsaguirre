@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/output.css')}}" />
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh; 
+        background-color: #0f172a;
+        margin: 0; 
+        overflow: hidden; 
+    }
+    
+</style>
+<body>
+    <div class="container">
+                {% block content%}
+                {% endblock %}
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+</body>
+</html>
