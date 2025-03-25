@@ -6,6 +6,7 @@ from models import db, Pedido, Usuarios
 from config import DevelopmentConfig
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ csr = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"  
+login_manager.login_message = "Por favor, inicie sesión para acceder a esta página."
 
 
 @login_manager.user_loader
@@ -45,6 +47,45 @@ def login():
             return redirect(url_for("login"))
 
     return render_template("index.html", form=classuser)
+
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    classuser = forms.UsuarioFrom(request.form)
+    if request.method == 'POST':
+        nombre = request.form.get('floating_first_name')
+        apellido = request.form.get('floating_last_name')
+        telefono = request.form.get('floating_phone')
+        correo = request.form.get('floating_email')
+        usuario = request.form.get('floating_usuario')  
+        contrasenia = request.form.get('floating_password')
+
+        if Usuarios.query.filter_by(usuario=usuario).first():
+            flash('El nombre de usuario ya existe. Intenta con otro.', 'danger')
+            return redirect(url_for('registro'))
+
+        if Usuarios.query.filter_by(correo=correo).first():
+            flash('El correo ya está registrado.', 'danger')
+            return redirect(url_for('registro'))
+
+        nuevo_usuario = Usuarios(
+            nombre=nombre,
+            apellido=apellido,
+            telefono=telefono,
+            correo=correo,
+            usuario=usuario,
+            contrasenia=contrasenia
+        )
+
+        try:
+            db.session.add(nuevo_usuario)
+            db.session.commit()
+            flash('Cuenta creada con éxito. Ahora puedes iniciar sesión.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ocurrió un error: {str(e)}', 'danger')
+
+    return render_template('cuenta.html',form=classuser)
 
 
 @app.route("/logout")
